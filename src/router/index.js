@@ -51,115 +51,208 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
   },
-
   {
-    path: '/example',
+    path: '/usercontrol',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    name: 'Usercontrol',
+    meta: { title: '用户管理', icon: 'user' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        path: 'membre',
+        name: 'Membre',
+        component: () => import('@/views/usercontrol/member'),
+        meta: { title: '会员管理' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
-
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
-
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        path: 'address',
+        name: 'Address',
+        component: () => import('@/views/usercontrol/Address'),
+        meta: { title: '收货地址' }
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Menu2',
-        meta: { title: 'menu2' }
+        path: 'collection',
+        name: 'Collection',
+        component: () => import('@/views/usercontrol/Collection'),
+        meta: { title: '会员收藏' }
+      },
+      {
+        path: 'footprint',
+        name: 'Footprint',
+        component: () => import('@/views/usercontrol/Footprint'),
+        meta: { title: '会员足迹' }
+      },
+      {
+        path: 'searchhistory',
+        name: 'SearchHistory',
+        component: () => import('@/views/usercontrol/SearchHistory'),
+        meta: { title: '搜索历史' }
+      },
+      {
+        path: 'feedback',
+        name: 'FeedBack',
+        component: () => import('@/views/usercontrol/FeedBack'),
+        meta: { title: '意见反馈' }
+      }
+    ]
+  },
+  {
+    path: '/mall',
+    component: Layout,
+    name: 'Mall',
+    meta: { title: '商场管理', icon: 'nested' },
+    children: [
+      {
+        path: 'region',
+        name: 'Region',
+        component: () => import('@/views/mall/region'),
+        meta: { title: '行政区域' }
+      },
+      {
+        path: 'brand',
+        name: 'Brand',
+        component: () => import('@/views/mall/brand'),
+        meta: { title: '品牌制造商' }
+      },
+      {
+        path: 'category',
+        name: 'Category',
+        component: () => import('@/views/mall/category'),
+        meta: { title: '商品类目' }
+      },
+      {
+        path: 'order',
+        name: 'Order',
+        component: () => import('@/views/mall/order'),
+        meta: { title: '订单管理' }
+      },
+      {
+        path: 'aftersale',
+        name: 'Aftersale',
+        component: () => import('@/views/mall/aftersale'),
+        meta: { title: '售后管理' }
+      },
+      {
+        path: 'issue',
+        name: 'Issue',
+        component: () => import('@/views/mall/issue'),
+        meta: { title: '通用问题' }
+      },
+      {
+        path: 'keyword',
+        name: 'Keyword',
+        component: () => import('@/views/mall/keyword'),
+        meta: { title: '关键词' }
       }
     ]
   },
 
   {
-    path: 'external-link',
+    path: '/goods',
     component: Layout,
+    name: 'Goods',
+    meta: { title: '商品管理', icon: 'tree' },
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        path: 'list',
+        name: 'List',
+        component: () => import('@/views/goods/list'),
+        meta: { title: '商品列表' }
+      },
+      {
+        path: 'create',
+        name: 'Create',
+        component: () => import('@/views/goods/create'),
+        meta: { title: '品牌制造商' }
+      },
+      {
+        path: 'comment',
+        name: 'Comment',
+        component: () => import('@/views/goods/comment'),
+        meta: { title: '商品评价' }
       }
     ]
   },
 
+  {
+    path: '/promotion',
+    component: Layout,
+    name: 'Promotion',
+    meta: { title: '推广管理', icon: 'tree' },
+    children: [
+      {
+        path: 'ad',
+        name: 'Ad',
+        component: () => import('@/views/promotion/ad'),
+        meta: { title: '广告管理' }
+      },
+      {
+        path: 'coupon',
+        name: 'Coupon',
+        component: () => import('@/views/promotion/coupon'),
+        meta: { title: '优惠卷管理' }
+      },
+      {
+        path: 'topic',
+        name: 'Topic',
+        component: () => import('@/views/promotion/topic'),
+        meta: { title: '专题管理' }
+      },
+      {
+        path: 'groupon-rule',
+        name: 'GrouponRule',
+        component: () => import('@/views/promotion/groupon-rule'),
+        meta: { title: '团购规则' }
+      },
+      {
+        path: 'groupon-activity',
+        name: 'GrouponActivity',
+        component: () => import('@/views/promotion/groupon-activity'),
+        meta: { title: '团购活动' }
+      }
+    ]
+  },
+
+  {
+    path: '/sys',
+    component: Layout,
+    name: 'Sys',
+    meta: { title: '系统管理', icon: 'tree' },
+    children: [
+      {
+        path: 'admin',
+        name: 'Admin',
+        component: () => import('@/views/sys/admin'),
+        meta: { title: '管理员' }
+      },
+      {
+        path: 'notice',
+        name: 'Notice',
+        component: () => import('@/views/sys/notice'),
+        meta: { title: '通知管理' }
+      },
+      {
+        path: 'log',
+        name: 'Log',
+        component: () => import('@/views/sys/log'),
+        meta: { title: '操作日志' }
+      },
+      {
+        path: 'role',
+        name: 'Role',
+        component: () => import('@/views/sys/role'),
+        meta: { title: '角色管理' }
+      },
+      {
+        path: 'os',
+        name: 'Os',
+        component: () => import('@/views/sys/os'),
+        meta: { title: '对象存储' }
+      }
+    ]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

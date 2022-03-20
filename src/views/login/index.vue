@@ -1,89 +1,85 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">管理员登录</h3>
       </div>
-
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
+        <el-input v-model="loginForm.username" name="username" type="text" tabindex="1" auto-complete="on" placeholder="管理员账户" />
       </el-form-item>
 
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input
-          :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
-          :type="passwordType"
-          placeholder="Password"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
+        <el-input v-model="loginForm.password" :type="passwordType" name="password" auto-complete="on" tabindex="2" show-password placeholder="管理员密码" @keyup.enter.native="handleLogin" />
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <!-- <el-form-item prop="code">
+        <span class="svg-container">
+          <svg-icon icon-class="lock" />
+        </span>
+        <el-input v-model="loginForm.code" auto-complete="off" name="code" tabindex="2" placeholder="验证码" style="width: 60%" @keyup.enter.native="handleLogin" />
+        <div class="login-code">
+          <img :src="codeImg" @click="getCode">
+        </div>
+      </el-form-item> -->
 
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
+
+      <div style="position:relative">
+        <div class="tips">
+          <span> 超级管理员用户名: admin123</span>
+          <span> 超级管理员用户名：admin123</span>
+        </div>
+        <div class="tips">
+          <span> 商城管理员用户名: mall123</span>
+          <span> 商城管理员用户名：mall123</span>
+        </div>
+        <div class="tips">
+          <span> 推广管理员用户名: promotion123</span>
+          <span> 推广管理员用户名：promotion123</span>
+        </div>
       </div>
-
     </el-form>
+
+    <div class="copyright">
+      Copyright © 2021 xxx.com 版权所有 <a href="https://github.com/linlinjava/litemall">沪ICP备xxx号</a>
+    </div>
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
-
+import { getKaptcha } from '@/api/user'
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('管理员密码长度应大于6'))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: 'admin123',
+        password: 'admin123',
+        code: ''
       },
+      codeImg: '',
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [{ required: true, message: '管理员账户不允许为空', trigger: 'blur' }],
+        password: [
+          { required: true, message: '管理员密码不允许为空', trigger: 'blur' },
+          { validator: validatePassword, trigger: 'blur' }
+        ]
       },
-      loading: false,
       passwordType: 'password',
-      redirect: undefined
+      loading: false
     }
   },
   watch: {
@@ -93,30 +89,39 @@ export default {
       },
       immediate: true
     }
+
+  },
+  created() {
+    this.getCode()
+    // window.addEventListener('hashchange', this.afterQRScan)
+  },
+  destroyed() {
+    // window.removeEventListener('hashchange', this.afterQRScan)
   },
   methods: {
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
+    getCode() {
+      getKaptcha().then(response => {
+        this.codeImg = response.data.data
       })
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
-        if (valid) {
+        if (valid && !this.loading) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
+          this.$store.dispatch('login', this.loginForm).then(() => {
             this.loading = false
-          }).catch(() => {
+            this.$router.push({ path: this.redirect || '/' })
+          }).catch(response => {
+            if (response.data.data) {
+              this.codeImg = response.data.data
+            }
+            this.$notify.error({
+              title: '失败',
+              message: response.data.errmsg
+            })
             this.loading = false
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -191,7 +196,14 @@ $light_gray:#eee;
     margin: 0 auto;
     overflow: hidden;
   }
-
+  .login-code {
+    padding-top: 5px;
+    float: right;
+    img{
+      cursor: pointer;
+      vertical-align:middle
+    }
+  }
   .tips {
     font-size: 14px;
     color: #fff;
@@ -223,15 +235,21 @@ $light_gray:#eee;
       font-weight: bold;
     }
   }
-
-  .show-pwd {
+  .copyright {
+    font-size: 12px;
+    color: #fff;
     position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    color: $dark_gray;
-    cursor: pointer;
-    user-select: none;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-bottom: 20px;
+    letter-spacing: 0.6px;
+    a {
+      font-weight: bold;
+      border-bottom: 1px solid #fff;
+      font-family: "PingFangSC-Semibold", sans-serif;
+    }
   }
 }
 </style>
+
