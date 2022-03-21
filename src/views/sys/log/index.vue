@@ -16,7 +16,7 @@
       <el-table-column prop="action" label="操作动作" align="center"></el-table-column>
       <el-table-column prop="prop" label="操作状态" align="center">
         <template slot-scope="{row,$index}">
-          <el-tag type="success">成功</el-tag>
+          <el-tag :type=" row.status === true ? 'success' : '' ">{{ row.status === true ? '成功' : '失败' }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="result" label="操作结果" align="center"></el-table-column>

@@ -100,6 +100,7 @@ const user = {
 
     // 动态修改权限
     ChangeRoles({ commit, dispatch }, role) {
+      // eslint-disable-next-line no-async-promise-executor
       return new Promise(async resolve => {
         commit('SET_TOKEN', role)
         setToken(role)

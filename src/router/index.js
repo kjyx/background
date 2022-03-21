@@ -162,10 +162,17 @@ export const constantRoutes = [
         meta: { title: '商品列表' }
       },
       {
+        path: 'edit',
+        name: 'Edit',
+        component: () => import('@/views/goods/edit'),
+        meta: { title: '商品编辑' },
+        hidden: true
+      },
+      {
         path: 'create',
         name: 'Create',
         component: () => import('@/views/goods/create'),
-        meta: { title: '品牌制造商' }
+        meta: { title: '商品上架' }
       },
       {
         path: 'comment',
@@ -175,7 +182,6 @@ export const constantRoutes = [
       }
     ]
   },
-
   {
     path: '/promotion',
     component: Layout,
