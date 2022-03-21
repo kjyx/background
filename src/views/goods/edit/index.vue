@@ -54,7 +54,7 @@
               :action="`${baseUrl}/storage/create`"
               list-type="picture-card"
               :limit="5"
-              :on-preview="handlePictureCardPreview"
+              :on-success="handlePictureCardPreview"
               :on-remove="handleRemove"
               :file-list="fileGalleryList"
             >
@@ -111,6 +111,102 @@
         </el-form-item>
       </el-form>
     </el-card>
+
+    <el-card class="box-card" style="margin-top: 20px">
+      <h3>商品规格</h3>
+      <el-table style="width: 100%" :data="specifications" size="mini">
+        <el-table-column prop="specification" label="规格名"></el-table-column>
+        <el-table-column prop="value" label="规格值">
+          <template slot-scope="{row,$index}">
+            <el-tag size="mini">{{ row.specification }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="picUrl" label="规格图片">
+          <template slot-scope="{row,$index}">
+            <img :src="row.picUrl" alt="">
+          </template>
+        </el-table-column>
+        <el-table-column prop="address" label="操作">
+          <template slot-scope="{row,$index}">
+            <el-button type="primary" size="mini" @click="SpecificationsSet(row)">设置</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+
+    <el-card class="box-card" style="margin-top: 20px">
+      <h3>商品库存</h3>
+      <el-table style="width: 100%" :data="products" size="mini">
+        <el-table-column prop="specification" label="货品规格">
+          <template slot-scope="{row,$index}">
+            <el-tag size="mini" v-for="(item,index) in row.specifications" :key="index">{{ item }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="price" label="货品售价"></el-table-column>
+        <el-table-column prop="number" label="货品数量"></el-table-column>
+        <el-table-column prop="url" label="规格图片">
+          <template slot-scope="{row,$index}">
+            <img :src="row.url" alt="" style="width: 30px;height: 30px">
+          </template>
+        </el-table-column>
+        <el-table-column prop="address" label="操作">
+          <template slot-scope="{row,$index}">
+            <el-button type="primary" size="mini">设置</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+
+    <el-card class="box-card" style="margin-top: 20px">
+      <h3>商品参数</h3>
+      <el-button type="primary" size="mini">添加</el-button>
+      <el-table style="width: 100%" :data="attributes" size="mini">
+        <el-table-column prop="attribute" label="商品参数名称"></el-table-column>
+        <el-table-column prop="value" label="商品参数值"></el-table-column>
+        <el-table-column prop="address" label="操作">
+          <template slot-scope="{row,$index}">
+            <el-button type="primary" size="mini">设置</el-button>
+            <el-button type="" size="mini">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+
+    <div style="display: flex;justify-content: center;margin-top: 20px">
+      <el-button type="" size="mini">取消</el-button>
+      <el-button type="primary" size="mini">更新商品</el-button>
+    </div>
+
+    <!--    规格设置-->
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="50%">
+      <el-form ref="form" :model="specificationsObj" label-width="80px">
+        <el-form-item label="规格名" prop="value">
+          <el-input v-model="specificationsObj.value" :disabled="true" size="mini" placeholder="placeholder"></el-input>
+        </el-form-item>
+        <el-form-item label="规格值" prop="specification">
+          <el-input v-model="specificationsObj.specification" :disabled="true" size="mini" placeholder="placeholder"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="规格图片" prop="picUrl">
+          <template slot-scope="{row,$index}">
+            <el-upload
+              :headers="headers"
+              class="avatar-uploader"
+              :action="`${baseUrl}/storage/create`"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess1"
+            >
+              <img v-if="specificationsObj.picUrl" :src="specificationsObj.picUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </template>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handlequedingguige">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -118,15 +214,17 @@
 import { createStorage, reqCatAndBrand, reqGoodsDetail } from '@/api/goods'
 import { getToken } from '@/utils/auth'
 import Editor from '@tinymce/tinymce-vue'
+
 export default {
   name: 'Edit',
+  components: { Editor },
   data() {
     return {
       keywords: [],
       newkeyword: '',
       fileGalleryList: [],
       inputVisible: false,
-      dialogVisible: true,
+      dialogVisible: false,
       baseUrl: 'http://182.160.8.76:8080/admin',
       attributes: [],
       categoryIds: [],
@@ -135,6 +233,7 @@ export default {
       specifications: [],
       brandList: [],
       categoryList: [],
+      specificationsObj: {},
       editorInit: {
         language: 'zh_CN',
         height: '400px',
@@ -160,7 +259,6 @@ export default {
       }
     }
   },
-  components:{ Editor },
   computed: {
     headers() {
       return {
@@ -184,6 +282,7 @@ export default {
         if (this.goods.brandId === 0) {
           this.goods.brandId = ''
         }
+        // 展示的图片列表
         for (let i = 0; i < this.goods.gallery.length; i++) {
           this.fileGalleryList.push({
             url: this.goods.gallery[i]
@@ -204,28 +303,47 @@ export default {
     handleAvatarSuccess(res, file) {
       this.goods.picUrl = res.data.url
     },
+    // 这里删除的时候有两种可能 一种是删除的刚添加的本地地址照片 ， 一种是服务器地址的图片
     handleRemove(file, fileList) {
-      console.log(file)
-    },
-    handlePictureCardPreview(file) {
-      this.goods.gallery.push(file.url)
-      this.dialogVisible = true
+      let url
+      // 如果是服务器地址照片是没有 response 的 直接就是 file.url
+      if (file.response === undefined) {
+        url = file.url
+      } else {
+        url = file.response.data.url
+      }
+      // 遍历 如果删除的item 跟 url 相同就把当前这个删掉
+      this.goods.gallery.forEach((item, index) => {
+        if (item === url) {
+          this.goods.gallery.splice(index, 1)
+        }
+      })
     },
 
-    // 关键词
+    handlePictureCardPreview(file) {
+      this.goods.gallery.push(file.data.url)
+    },
+
+    // 关键词  删除时
     handleClose(index) {
       this.keywords.splice(index, 1)
+      this.goods.keywords = this.keywords.join(',')
     },
+
+    // 切换input自动聚焦
     showInput() {
       this.inputVisible = true
       this.$nextTick(_ => {
         this.$refs.saveTagInput.$refs.input.focus()
       })
     },
+
+    // 添加关键词
     handleInputConfirm() {
       const inputValue = this.newkeyword
       if (inputValue) {
         this.keywords.push(inputValue)
+        this.goods.keywords = this.keywords.join(',')
       }
       this.inputVisible = false
       this.newkeyword = ''
@@ -234,6 +352,25 @@ export default {
     // 选择分类
     handleChange(value) {
       this.goods.categoryId = value[value.length - 1]
+    },
+
+    // 规格设置
+    SpecificationsSet(row) {
+      this.specificationsObj = Object.assign({}, row)
+      this.dialogVisible = true
+    },
+
+    handleAvatarSuccess1(file) {
+      this.specificationsObj.picUrl = file.data.url
+    },
+    // 确认修改规格
+    handlequedingguige() {
+      this.specifications.forEach((item, index) => {
+        if (item.id === this.specificationsObj.id) {
+          this.specifications.splice(index, 1, this.specificationsObj)
+        }
+      })
+      this.dialogVisible = false
     }
   }
 }
