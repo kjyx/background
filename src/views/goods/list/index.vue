@@ -84,8 +84,9 @@
       </el-table-column>
       <el-table-column align="center" label="操作" prop="desc" width="200">
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="$router.push({path:'/goods/edit',query:{id: row.id}})">编辑</el-button>
-          <el-button type="danger" size="mini">删除</el-button>
+          <el-button type="primary" size="mini" @click="$router.push({path:'/goods/edit',query:{id: row.id}})">编辑
+          </el-button>
+          <el-button type="danger" size="mini" @click="handleEditDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -99,7 +100,7 @@
 </template>
 
 <script>
-import { reqGoodsList } from '@/api/goods'
+import { reqGoodsDelete, reqGoodsList } from '@/api/goods'
 
 export default {
   name: 'List',
@@ -142,6 +143,18 @@ export default {
     // 点击图片预览
     handleGoodsImage(picUrl) {
       this.srcList.splice(0, 1, picUrl)
+    },
+
+    // 删除
+    async handleEditDelete(row) {
+      const result = await reqGoodsDelete(row)
+      if (result.status === 200) {
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success'
+        })
+      }
     }
   }
 }

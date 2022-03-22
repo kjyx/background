@@ -26,3 +26,17 @@ export const createStorage = () => requests({
   url: '/storage/create',
   method: 'post'
 })
+
+// 更新商品
+export const reqGoodsUpdate = (data) => requests({
+  url: '/goods/update',
+  method: 'post',
+  data
+})
+
+// 删除商品
+export const reqGoodsDelete = (data) => requests({
+  url: '/goods/delete',
+  method: 'post',
+  data
+})

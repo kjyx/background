@@ -90,8 +90,8 @@
 
         <el-form-item label="所属分类">
           <el-cascader
-            placeholder="请选择"
             v-model="categoryIds"
+            placeholder="请选择"
             :options="categoryList"
             :props="{ expandTrigger: 'hover' }"
             @change="handleChange"
@@ -100,14 +100,14 @@
 
         <el-form-item label="所属品牌商" prop="brandId">
           <el-select v-model="goods.brandId" placeholder="请选择">
-            <el-option v-for="item in brandList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            <el-option v-for="item in brandList" :key="item.value" :label="item.label" :value="item.value"/>
           </el-select>
         </el-form-item>
         <el-form-item label="商品简介" prop="brief">
-          <el-input v-model="goods.brief" placeholder="商品简介"></el-input>
+          <el-input v-model="goods.brief" placeholder="商品简介"/>
         </el-form-item>
         <el-form-item label="商品详情介绍">
-          <Editor v-model="goods.detail" :init="editorInit"></Editor>
+          <Editor v-model="goods.detail" :init="editorInit"/>
         </el-form-item>
       </el-form>
     </el-card>
@@ -115,7 +115,7 @@
     <el-card class="box-card" style="margin-top: 20px">
       <h3>商品规格</h3>
       <el-table style="width: 100%" :data="specifications" size="mini">
-        <el-table-column prop="specification" label="规格名"></el-table-column>
+        <el-table-column prop="specification" label="规格名"/>
         <el-table-column prop="value" label="规格值">
           <template slot-scope="{row,$index}">
             <el-tag size="mini">{{ row.specification }}</el-tag>
@@ -139,11 +139,11 @@
       <el-table style="width: 100%" :data="products" size="mini">
         <el-table-column prop="specification" label="货品规格">
           <template slot-scope="{row,$index}">
-            <el-tag size="mini" v-for="(item,index) in row.specifications" :key="index">{{ item }}</el-tag>
+            <el-tag v-for="(item,index) in row.specifications" :key="index" size="mini">{{ item }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="price" label="货品售价"></el-table-column>
-        <el-table-column prop="number" label="货品数量"></el-table-column>
+        <el-table-column prop="price" label="货品售价"/>
+        <el-table-column prop="number" label="货品数量"/>
         <el-table-column prop="url" label="规格图片">
           <template slot-scope="{row,$index}">
             <img :src="row.url" alt="" style="width: 30px;height: 30px">
@@ -151,7 +151,7 @@
         </el-table-column>
         <el-table-column prop="address" label="操作">
           <template slot-scope="{row,$index}">
-            <el-button type="primary" size="mini">设置</el-button>
+            <el-button type="primary" size="mini" @click="productsSet(row)">设置</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -159,33 +159,37 @@
 
     <el-card class="box-card" style="margin-top: 20px">
       <h3>商品参数</h3>
-      <el-button type="primary" size="mini">添加</el-button>
+      <el-button type="primary" size="mini" @click="attributesAddAndSet">添加</el-button>
       <el-table style="width: 100%" :data="attributes" size="mini">
-        <el-table-column prop="attribute" label="商品参数名称"></el-table-column>
-        <el-table-column prop="value" label="商品参数值"></el-table-column>
+        <el-table-column prop="attribute" label="商品参数名称"/>
+        <el-table-column prop="value" label="商品参数值"/>
         <el-table-column prop="address" label="操作">
           <template slot-scope="{row,$index}">
-            <el-button type="primary" size="mini">设置</el-button>
-            <el-button type="" size="mini">删除</el-button>
+            <el-button type="primary" size="mini" @click="attributesAddAndSet(row)">设置</el-button>
+            <el-button type="" size="mini" @click="attributesDelete(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
 
     <div style="display: flex;justify-content: center;margin-top: 20px">
-      <el-button type="" size="mini">取消</el-button>
-      <el-button type="primary" size="mini">更新商品</el-button>
+      <el-button type="" size="mini" @click="$router.go(-1)">取消</el-button>
+      <el-button type="primary" size="mini" @click="goodsUpdate">更新商品</el-button>
     </div>
 
     <!--    规格设置-->
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="50%">
+    <el-dialog title="规格设置" :visible.sync="dialogVisible" width="50%">
       <el-form ref="form" :model="specificationsObj" label-width="80px">
         <el-form-item label="规格名" prop="value">
-          <el-input v-model="specificationsObj.value" :disabled="true" size="mini" placeholder="placeholder"></el-input>
+          <el-input v-model="specificationsObj.value" :disabled="true" size="mini" placeholder="placeholder"/>
         </el-form-item>
         <el-form-item label="规格值" prop="specification">
-          <el-input v-model="specificationsObj.specification" :disabled="true" size="mini" placeholder="placeholder"
-          ></el-input>
+          <el-input
+            v-model="specificationsObj.specification"
+            :disabled="true"
+            size="mini"
+            placeholder="placeholder"
+          />
         </el-form-item>
         <el-form-item label="规格图片" prop="picUrl">
           <template slot-scope="{row,$index}">
@@ -197,7 +201,7 @@
               :on-success="handleAvatarSuccess1"
             >
               <img v-if="specificationsObj.picUrl" :src="specificationsObj.picUrl" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <i v-else class="el-icon-plus avatar-uploader-icon"/>
             </el-upload>
           </template>
         </el-form-item>
@@ -207,11 +211,63 @@
         <el-button type="primary" @click="handlequedingguige">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!--    库存设置-->
+    <el-dialog title="库存设置" :visible.sync="dialogVisibleProducts" width="50%">
+
+      <el-form ref="form" :model="productsObj" label-width="100px">
+        <el-form-item label="货品规格列" prop="specifications">
+          <template slot-scope="{row,$index}">
+            <el-tag v-for="item in productsObj.specifications" type="">{{ item }}</el-tag>
+          </template>
+        </el-form-item>
+        <el-form-item label="货品售价" prop="price">
+          <el-input v-model.number="productsObj.price" placeholder="placeholder"/>
+        </el-form-item>
+        <el-form-item label="货品数量" prop="number">
+          <el-input v-model.number="productsObj.number" placeholder="placeholder"/>
+        </el-form-item>
+        <el-form-item label="货品图片">
+          <template slot-scope="{row,$index}">
+            <el-upload
+              :headers="headers"
+              class="avatar-uploader"
+              :action="`${baseUrl}/storage/create`"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccessProducts"
+            >
+              <img v-if="productsObj.url" :src="productsObj.url" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"/>
+            </el-upload>
+          </template>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisibleProducts = false">取 消</el-button>
+        <el-button type="primary" @click="productsEnd">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!--    商品参数设置-->
+    <el-dialog title="编辑商品参数" :visible.sync="dialogVisibleAttributes" width="50%">
+      <el-form ref="form" :model="attributesObj" label-width="100px">
+        <el-form-item label="商品参数名称">
+          <el-input v-model="attributesObj.attribute" size="mini" placeholder="placeholder"/>
+        </el-form-item>
+        <el-form-item label="商品参数值">
+          <el-input v-model="attributesObj.value" size="mini" placeholder="placeholder"/>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisibleAttributes = false">取 消</el-button>
+        <el-button type="primary" @click="attributesEnd">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { createStorage, reqCatAndBrand, reqGoodsDetail } from '@/api/goods'
+import { createStorage, reqCatAndBrand, reqGoodsDetail, reqGoodsUpdate } from '@/api/goods'
 import { getToken } from '@/utils/auth'
 import Editor from '@tinymce/tinymce-vue'
 
@@ -220,6 +276,9 @@ export default {
   components: { Editor },
   data() {
     return {
+      flag: null,
+      dialogVisibleAttributes: false,
+      dialogVisibleProducts: false,
       keywords: [],
       newkeyword: '',
       fileGalleryList: [],
@@ -234,6 +293,8 @@ export default {
       brandList: [],
       categoryList: [],
       specificationsObj: {},
+      productsObj: {},
+      attributesObj: {},
       editorInit: {
         language: 'zh_CN',
         height: '400px',
@@ -371,6 +432,83 @@ export default {
         }
       })
       this.dialogVisible = false
+    },
+
+    // 商品库存设置
+    productsSet(row) {
+      this.dialogVisibleProducts = true
+      this.productsObj = Object.assign({}, row)
+    },
+
+    // 上传图片回调
+    handleAvatarSuccessProducts(res) {
+      this.productsObj.url = res.data.url
+    },
+
+    // 确认修改
+    productsEnd() {
+      this.products.forEach((item, index) => {
+        if (this.productsObj.id === item.id) {
+          this.products.splice(index, 1, this.productsObj)
+        }
+      })
+      this.dialogVisibleProducts = false
+    },
+
+    // 商品参设置和添加
+    attributesAddAndSet(row) {
+      if (row.id) {
+        this.flag = 0
+        this.attributesObj = Object.assign({}, row)
+      } else {
+        this.attributesObj = {}
+        this.flag = 1
+      }
+      this.dialogVisibleAttributes = true
+    },
+
+    // 确认参数
+    attributesEnd() {
+      if (this.flag === 0) {
+        this.attributes.forEach((item, index) => {
+          if (item.id === this.attributesObj.id) {
+            this.attributes.splice(index, 1, this.attributesObj)
+          }
+        })
+      } else {
+        // 生成时间戳 为唯一id
+        this.attributesObj.id = this.attributes[0].id - 1
+        this.attributesObj.deleted = false
+        this.attributes.unshift(this.attributesObj)
+      }
+      this.dialogVisibleAttributes = false
+    },
+    // 删除
+    attributesDelete(row) {
+      row.deleted = true
+      this.attributes.forEach((item, index) => {
+        if (row.id === item.id && row.deleted === true) {
+          this.attributes.splice(index, 1)
+        }
+      })
+    },
+
+    // 更新商品
+    async goodsUpdate() {
+      const goodsUpdate = {}
+      goodsUpdate.attributes = this.attributes
+      goodsUpdate.goods = this.goods
+      goodsUpdate.products = this.products
+      goodsUpdate.specifications = this.specifications
+      const result = await reqGoodsUpdate(goodsUpdate)
+      if (result.status === 200) {
+        this.$router.go(-1)
+        this.$notify({
+          title: '成功',
+          message: '编辑成功',
+          type: 'success'
+        })
+      }
     }
   }
 }
