@@ -3,8 +3,8 @@
     <el-card class="box-card">
       <h3>商品介绍</h3>
       <el-form ref="form" :model="goods" label-width="100px" size="mini" style="margin-left: 80px">
-        <el-form-item label="商品编号" prop="id" :rules="[ { required: true, message: '请输入商品编号', trigger: 'blur' },]">
-          <el-input v-model="goods.id" placeholder="请输入商品编号" size="mini"/>
+        <el-form-item label="商品编号" prop="goodsSn" :rules="[ { required: true, message: '请输入商品编号', trigger: 'blur' },]">
+          <el-input v-model="goods.goodsSn" placeholder="请输入商品编号" size="mini"/>
         </el-form-item>
         <el-form-item label="商品名称" prop="name" :rules="[ { required: true, message: '请输入商品编号', trigger: 'blur' },]">
           <el-input v-model="goods.name" placeholder="请输入商品名称" size="mini"/>
@@ -180,7 +180,6 @@
         <el-table-column prop="value" label="商品参数值"/>
         <el-table-column prop="address" label="操作">
           <template slot-scope="{row,$index}">
-            <el-button type="primary" size="mini" @click="attributesAddAndSet(row)">设置</el-button>
             <el-button type="" size="mini" @click="attributesDelete(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -189,7 +188,7 @@
 
     <div style="display: flex;justify-content: center;margin-top: 20px">
       <el-button type="" size="mini" @click="$router.go(-1)">取消</el-button>
-      <el-button type="primary" size="mini" @click="goodsUpdate">更新商品</el-button>
+      <el-button type="primary" size="mini" @click="goodsCreate">上架</el-button>
     </div>
 
     <!--    规格设置-->
@@ -281,7 +280,7 @@
 </template>
 
 <script>
-import { createStorage, reqCatAndBrand, reqGoodsDetail, reqGoodsUpdate } from '@/api/goods'
+import { createStorage, reqCatAndBrand, reqGoodsCreate, reqGoodsDetail, reqGoodsUpdate } from '@/api/goods'
 import { getToken } from '@/utils/auth'
 import Editor from '@tinymce/tinymce-vue'
 
@@ -302,7 +301,10 @@ export default {
       baseUrl: 'http://182.160.8.76:8080/admin',
       attributes: [],
       categoryIds: [],
-      goods: {},
+      goods: {
+        gallery: [],
+        picUrl: ''
+      },
       productsFrom: [{ id: 0, specifications: [], price: 0.00, number: 0, url: '' }],
       products: [{ id: 0, specifications: ['标准'], price: 0.00, number: 0, url: '' }],
       specifications: [{ specification: '规格', value: '标准', picUrl: '' }],
@@ -540,59 +542,43 @@ export default {
     },
 
     // 商品参设置和添加
-    attributesAddAndSet(row) {
-      if (row.id) {
-        this.flag = 0
-        this.attributesObj = Object.assign({}, row)
-      } else {
-        this.attributesObj = {}
-        this.flag = 1
-      }
+    attributesAddAndSet() {
+      this.attributesObj = {}
       this.dialogVisibleAttributes = true
     },
 
     // 确认参数
     attributesEnd() {
-      if (this.flag === 0) {
-        this.attributes.forEach((item, index) => {
-          if (item.id === this.attributesObj.id) {
-            this.attributes.splice(index, 1, this.attributesObj)
-          }
-        })
-      } else {
-        // 生成时间戳 为唯一id
-        this.attributesObj.id = this.attributes[0].id - 1
-        this.attributesObj.deleted = false
-        this.attributes.unshift(this.attributesObj)
-      }
+      // 生成时间戳 为唯一id
+      this.attributesObj.deleted = false
+      this.attributes.unshift(this.attributesObj)
       this.dialogVisibleAttributes = false
     },
     // 删除
     attributesDelete(row) {
       row.deleted = true
       this.attributes.forEach((item, index) => {
-        if (row.id === item.id && row.deleted === true) {
+        if (row.deleted === true) {
           this.attributes.splice(index, 1)
         }
       })
     },
 
     // 更新商品
-    async goodsUpdate() {
-      const goodsUpdate = {}
-      goodsUpdate.attributes = this.attributes
-      goodsUpdate.goods = this.goods
-      goodsUpdate.products = this.products
-      goodsUpdate.specifications = this.specifications
-      const result = await reqGoodsUpdate(goodsUpdate)
-      if (result.status === 200) {
-        this.$router.go(-1)
-        this.$notify({
-          title: '成功',
-          message: '编辑成功',
-          type: 'success'
-        })
-      }
+    async goodsCreate() {
+      const goodsCreate = {}
+      goodsCreate.attributes = this.attributes
+      goodsCreate.goods = this.goods
+      goodsCreate.products = this.products
+      goodsCreate.specifications = this.specifications
+      const result = await reqGoodsCreate(goodsCreate)
+      console.log(result)
+      this.$router.push({ path: '/goods/list' })
+      this.$notify({
+        title: '成功',
+        message: '创建成功',
+        type: 'success'
+      })
     }
   }
 }

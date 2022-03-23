@@ -40,3 +40,30 @@ export const reqGoodsDelete = (data) => requests({
   method: 'post',
   data
 })
+// 上架商品
+export const reqGoodsCreate = (data) => requests({
+  url: '/goods/create',
+  method: 'post',
+  data
+})
+
+// 商品评论
+export const reqCommentList = (data) => requests({
+  url: '/comment/list',
+  method: 'get',
+  params: data
+})
+
+// 回复
+export const reqOrderReply = (data) => requests({
+  url: '/order/reply',
+  method: 'post',
+  data
+})
+
+// 删除
+export const reqCommentDelete = (data) => requests({
+  url: '/comment/delete',
+  method: 'post',
+  data
+})

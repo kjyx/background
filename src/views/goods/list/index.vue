@@ -1,10 +1,14 @@
 <template>
   <div style="padding: 20px">
     <div style="padding-bottom: 10px">
-      <el-input style="margin: 0 10px 10px 0;width: 200px" placeholder="请输入商品ID" size="mini"/>
-      <el-input style="margin: 0 10px 10px 0;width: 200px" placeholder="请输入商品编号" size="mini"/>
-      <el-input style="margin: 0 10px 10px 0;width: 200px" placeholder="请输入商品名称" size="mini"/>
-      <el-button type="primary" icon="el-icon-search" size="mini">查找</el-button>
+      <el-input v-model="goodsId" style="margin: 0 10px 10px 0;width: 200px" placeholder="请输入商品ID"
+                size="mini"
+      />
+      <el-input v-model="goodsSn" style="margin: 0 10px 10px 0;width: 200px" placeholder="请输入商品编号"
+                size="mini"
+      />
+      <el-input v-model="name" style="margin: 0 10px 10px 0;width: 200px" placeholder="请输入商品名称" size="mini"/>
+      <el-button type="primary" icon="el-icon-search" size="mini" @click="goodsFind">查找</el-button>
       <el-button type="primary" icon="el-icon-edit" size="mini">添加</el-button>
       <el-button type="primary" icon="el-icon-download" size="mini">导出</el-button>
     </div>
@@ -117,7 +121,10 @@ export default {
         limit: 20,
         sort: 'add_time',
         order: 'desc'
-      }
+      },
+      goodsId:'',
+      goodsSn:'',
+      name:''
     }
   },
   mounted() {
@@ -154,7 +161,16 @@ export default {
           message: '删除成功',
           type: 'success'
         })
+        this.getGoodsList()
       }
+    },
+
+    // 搜索
+    goodsFind() {
+      this.dateFrom.goodsId = this.goodsId
+      this.dateFrom.goodsSn = this.goodsSn
+      this.dateFrom.name = this.name
+      this.getGoodsList()
     }
   }
 }
