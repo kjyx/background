@@ -201,6 +201,13 @@ export const constantRoutes = [
         meta: { title: '优惠卷管理' }
       },
       {
+        path: '/coupondetail',
+        name: 'CouponDetail',
+        component: () => import('@/views/promotion/coupon/couponDetail'),
+        meta: { title: '优惠卷详情' },
+        hidden: true
+      },
+      {
         path: 'topic',
         name: 'Topic',
         component: () => import('@/views/promotion/topic'),
