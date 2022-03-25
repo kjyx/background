@@ -84,3 +84,52 @@ export const reqCouponListuser = (data) => requests({
   method: 'get',
   params: data
 })
+
+// 专题管理 /topic/list
+export const reqTopicList = (data) => requests({
+  url: '/topic/list',
+  method: 'get',
+  params: data
+})
+
+// 编辑 /topic/read
+export const reqTopicRead = (id) => requests({
+  url: '/topic/read',
+  method: 'get',
+  params: {
+    id
+  }
+})
+
+// 确认
+export const reqTopicUpdate = (data) => requests({
+  url: '/topic/update',
+  method: 'post',
+  data
+})
+// 确认添加
+export const reqTopicCreate = (data) => requests({
+  url: '/topic/create',
+  method: 'post',
+  data
+})
+
+// 删除
+export const reqTopiceDelete = (data) => requests({
+  url: '/topic/delete',
+  method: 'post',
+  data
+})
+// 批量删除 /topic/batch-delete
+export const reqTopicBatchDelete = (data) => requests({
+  url: '/topic/batch-delete',
+  method: 'post',
+  data
+})
+
+// 团购规则 /groupon/list
+export const reqGrouponList = (data) => requests({
+  url: '/groupon/list',
+  method: 'get',
+  params: data
+})

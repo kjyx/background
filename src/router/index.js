@@ -214,6 +214,13 @@ export const constantRoutes = [
         meta: { title: '专题管理' }
       },
       {
+        path: 'topic-reateAndedit',
+        name: 'TopicCeateAndEdit',
+        component: () => import('@/views/promotion/topic/topic-reateAndedit'),
+        meta: { title: '专题编辑And创建' },
+        hidden: true
+      },
+      {
         path: 'groupon-rule',
         name: 'GrouponRule',
         component: () => import('@/views/promotion/groupon-rule'),

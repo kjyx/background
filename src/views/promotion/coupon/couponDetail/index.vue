@@ -43,13 +43,13 @@
       </el-select>
       <el-button size="mini" type="primary" @click="getCouponListusre">查找</el-button>
     </div>
-    <el-table style="width: 100%" :data="CouponListusre" size="mini" border :default-sort="{prop: 'date', order: 'descending'}">
-      <el-table-column align="center" prop="date" label="用户优惠卷ID" sortable></el-table-column>
-      <el-table-column align="center" prop="name" label="用户ID"></el-table-column>
-      <el-table-column align="center" prop="address" label="领取时间"></el-table-column>
-      <el-table-column align="center" prop="address" label="使用状态"></el-table-column>
-      <el-table-column align="center" prop="address" label="订单ID"></el-table-column>
-      <el-table-column align="center" prop="address" label="使用时间"></el-table-column>
+    <el-table style="width: 100%" :data="CouponListusre" size="mini" border >
+      <el-table-column align="center" prop="prop" label="用户优惠卷ID" sortable></el-table-column>
+      <el-table-column align="center" prop="prop" label="用户ID"></el-table-column>
+      <el-table-column align="center" prop="prop" label="领取时间"></el-table-column>
+      <el-table-column align="center" prop="prop" label="使用状态"></el-table-column>
+      <el-table-column align="center" prop="prop" label="订单ID"></el-table-column>
+      <el-table-column align="center" prop="prop" label="使用时间"></el-table-column>
     </el-table>
   </div>
 </template>
@@ -124,7 +124,7 @@ export default {
     async getCouponListusre() {
       const result = await reqCouponListuser(this.dateForm)
       if (result.status === 200) {
-        this.CouponListusre = result.data.data
+        this.CouponListusre = result.data.data.list
       }
     },
     getTimeScope() {
